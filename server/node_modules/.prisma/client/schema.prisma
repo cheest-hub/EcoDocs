@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  email    String @unique
+  password String
+  role     String @default("VIEWER") // ADMIN, EDITOR, VIEWER
+  avatar   String?
+  docs     Document[]
+  auditLogs AuditLog[]
+}
+
+model SystemSettings {
+  id          Int     @id @default(1)
+  companyName String  @default("EcoDocs")
+  companyLogo String?
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  userName  String
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id        Int       @id @default(autoincrement())
+  title     String
+  description String? // Optional description
+  uniqueCode String @unique @default(cuid()) // Placeholder default, will be overwritten
+  path      String
+  mimeType  String
+  size      Int
+  createdAt DateTime  @default(now())
+  ownerId   Int
+  owner     User      @relation(fields: [ownerId], references: [id])
+  versions  Version[]
+  tags      Tag[]
+  
+  // Financeiro e Workflow
+  category      String   @default("OUTROS") // PAGAMENTO, ADTO, OUTROS
+  value         Float?   @default(0)
+  status        String   @default("PENDENTE") // PENDENTE, APROVADO, REJEITADO, CANCELADO
+  paymentStatus String   @default("A_PAGAR") // A_PAGAR, PAGO
+  paymentDate   DateTime?
+  supplier      String?
+  costCenter    String?
+  justification String?
+  reviewComment String?
+  reviewedBy    String?
+  liquidatedBy  String?
+  approvedAt    DateTime?
+  conciliatedAt DateTime?
+  conciliatedBy String?
+  attachments   Attachment[]
+}
+
+model Attachment {
+  id         Int      @id @default(autoincrement())
+  document   Document @relation(fields: [documentId], references: [id])
+  documentId Int
+  path       String
+  name       String
+  mimeType   String
+  size       Int
+  uploadedBy String
+  createdAt  DateTime @default(now())
+}
+
+model Version {
+  id            Int      @id @default(autoincrement())
+  documentId    Int
+  path          String
+  versionNumber Int
+  createdAt     DateTime @default(now())
+  document      Document @relation(fields: [documentId], references: [id])
+}
+
+model Tag {
+  id         Int      @id @default(autoincrement())
+  name       String
+  documentId Int
+  document   Document @relation(fields: [documentId], references: [id])
+}

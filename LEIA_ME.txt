@@ -1,0 +1,23 @@
+# EcoDocs - Versão de Produção
+
+## Instruções de Instalação
+
+1.  Certifique-se de ter o **Node.js** instalado (versão 18 ou superior).
+2.  Copie a pasta `EcoDocs_Producao` para o local desejado.
+
+## Como Iniciar
+
+1.  Abra a pasta `EcoDocs_Producao`.
+2.  Dê um duplo clique no arquivo `iniciar_sistema.bat`.
+3.  Aguarde a instalação das dependências (na primeira execução) e a mensagem "EcoDocs API Running".
+4.  Acesse `http://localhost:3000` no seu navegador.
+
+## Credenciais Iniciais
+
+-   **Usuário**: admin
+-   **Senha**: admin123
+
+## Observações
+
+-   Os arquivos carregados serão salvos na pasta `server/uploads`.
+-   O banco de dados é o arquivo `server/prisma/dev.db`. Faça backup deste arquivo regularmente.
